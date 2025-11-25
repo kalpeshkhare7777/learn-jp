@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/hiragana-flashcards/static/css/main.e6c13ad2.css",
+    "main.js": "/hiragana-flashcards/static/js/main.a6316cf3.js",
+    "static/js/453.9f91a5a1.chunk.js": "/hiragana-flashcards/static/js/453.9f91a5a1.chunk.js",
+    "index.html": "/hiragana-flashcards/index.html",
+    "main.e6c13ad2.css.map": "/hiragana-flashcards/static/css/main.e6c13ad2.css.map",
+    "main.a6316cf3.js.map": "/hiragana-flashcards/static/js/main.a6316cf3.js.map",
+    "453.9f91a5a1.chunk.js.map": "/hiragana-flashcards/static/js/453.9f91a5a1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.a6316cf3.js"
+  ]
+}
