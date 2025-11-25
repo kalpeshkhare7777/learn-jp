@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 // --- INLINE CSS STYLES ---
 const styles = `
@@ -100,14 +100,6 @@ const styles = `
   }
   .btn-secondary:active { transform: scale(0.98); }
 
-  .btn-outline {
-    background: white; color: var(--text-main);
-    border: 1px solid var(--border); padding: 15px;
-    border-radius: 12px; font-weight: bold; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .btn-outline:hover { background: var(--bg-color); }
-
   /* Flashcard 3D Flip */
   .study-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
   .top-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
@@ -153,6 +145,8 @@ const styles = `
   .card-hint { margin-top: auto; margin-bottom: 2rem; font-size: 0.9rem; opacity: 0.6; display: flex; align-items: center; gap: 5px; }
 
   .controls { width: 100%; display: flex; gap: 10px; }
+  .keyboard-hint { margin-top: 20px; font-size: 0.9rem; color: var(--text-muted); opacity: 0.8; }
+  .key-badge { background: #e2e8f0; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; color: var(--text-main); border-bottom: 2px solid #cbd5e1; }
 `;
 
 // --- ICONS (Inline SVGs) ---
@@ -222,7 +216,8 @@ export default function App() {
     return pool;
   }, [selectedRowIds]);
 
-  const pickRandomCard = () => {
+  // Pick new card (Reset Flip)
+  const pickRandomCard = useCallback(() => {
     if (activePool.length === 0) return;
     let nextCard;
     do {
@@ -232,7 +227,33 @@ export default function App() {
 
     setIsFlipped(false);
     setTimeout(() => setCurrentCard(nextCard), 150);
-  };
+  }, [activePool, currentCard]);
+
+  // Handle Main Action: Flip if front, Next if back
+  const handleMainAction = useCallback(() => {
+    if (isFlipped) {
+      // If already flipped (showing answer), go to next
+      pickRandomCard();
+    } else {
+      // If showing question, flip to answer
+      setIsFlipped(true);
+    }
+  }, [isFlipped, pickRandomCard]);
+
+  // Keyboard Listener (Spacebar)
+  useEffect(() => {
+    if (mode !== 'study') return;
+
+    const handleKeyDown = (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault(); // Stop scrolling
+        handleMainAction();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mode, handleMainAction]);
 
   const startSession = () => {
     if (selectedRowIds.length === 0) return;
@@ -328,28 +349,29 @@ export default function App() {
               </span>
             </div>
 
-            <div className="card-scene" onClick={() => setIsFlipped(!isFlipped)}>
+            <div className="card-scene" onClick={handleMainAction}>
               <div className={`card-object ${isFlipped ? 'flipped' : ''}`}>
                 <div className="card-face front">
                   <span className="card-label">Hiragana</span>
                   <div className="kana-large">{currentCard?.k}</div>
-                  <div className="card-hint">Click to flip <Icons.Refresh /></div>
+                  <div className="card-hint">Tap / Space to flip <Icons.Refresh /></div>
                 </div>
                 <div className="card-face back">
                   <span className="card-label" style={{color: 'rgba(255,255,255,0.8)'}}>Romaji</span>
                   <div className="romaji-large">{currentCard?.r}</div>
-                  <div className="card-hint" style={{color: 'rgba(255,255,255,0.8)'}}>Next card?</div>
+                  <div className="card-hint" style={{color: 'rgba(255,255,255,0.8)'}}>Tap / Space for Next Card <Icons.ArrowRight /></div>
                 </div>
               </div>
             </div>
 
             <div className="controls">
-              <button onClick={() => setIsFlipped(!isFlipped)} className="btn-flip btn-outline" style={{flex: 1}}>
-                <Icons.Refresh /> Flip
+              <button onClick={handleMainAction} className="btn-next btn-secondary" style={{width: '100%'}}>
+                {isFlipped ? 'Next Card' : 'Flip'} <Icons.ArrowRight />
               </button>
-              <button onClick={pickRandomCard} className="btn-next btn-secondary" style={{flex: 2}}>
-                Next Card <Icons.ArrowRight />
-              </button>
+            </div>
+            
+            <div className="keyboard-hint">
+              Press <span className="key-badge">Space</span> to Flip / Next
             </div>
           </div>
         )}
