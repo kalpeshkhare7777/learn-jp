@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/learn-jp/static/css/main.e6c13ad2.css",
-    "main.js": "/learn-jp/static/js/main.60b0903b.js",
+    "main.js": "/learn-jp/static/js/main.e1a1a78d.js",
     "static/js/453.9f91a5a1.chunk.js": "/learn-jp/static/js/453.9f91a5a1.chunk.js",
     "index.html": "/learn-jp/index.html",
     "main.e6c13ad2.css.map": "/learn-jp/static/css/main.e6c13ad2.css.map",
-    "main.60b0903b.js.map": "/learn-jp/static/js/main.60b0903b.js.map",
+    "main.e1a1a78d.js.map": "/learn-jp/static/js/main.e1a1a78d.js.map",
     "453.9f91a5a1.chunk.js.map": "/learn-jp/static/js/453.9f91a5a1.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.60b0903b.js"
+    "static/js/main.e1a1a78d.js"
   ]
 }
