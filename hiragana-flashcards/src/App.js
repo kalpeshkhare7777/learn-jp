@@ -7,6 +7,7 @@ const styles = `
     --primary-hover: #e11d48;
     --secondary: #6366f1;
     --accent: #f59e0b;
+    --combo: #10b981;
     --bg-color: #f8fafc;
     --card-bg: #ffffff;
     --text-main: #1e293b;
@@ -170,7 +171,8 @@ const HIRAGANA_DATA = {
     { id: 'row-ma', label: 'Ma (ま)', chars: [{ k: 'ま', r: 'ma' }, { k: 'み', r: 'mi' }, { k: 'む', r: 'mu' }, { k: 'め', r: 'me' }, { k: 'も', r: 'mo' }] },
     { id: 'row-ya', label: 'Ya (や)', chars: [{ k: 'や', r: 'ya' }, { k: 'ゆ', r: 'yu' }, { k: 'よ', r: 'yo' }] },
     { id: 'row-ra', label: 'Ra (ら)', chars: [{ k: 'ら', r: 'ra' }, { k: 'り', r: 'ri' }, { k: 'る', r: 'ru' }, { k: 'れ', r: 're' }, { k: 'ろ', r: 'ro' }] },
-    { id: 'row-wa', label: 'Wa (わ)', chars: [{ k: 'わ', r: 'wa' }, { k: 'を', r: 'wo' }, { k: 'ん', r: 'n' }] },
+    { id: 'row-wa', label: 'Wa (わ)', chars: [{ k: 'わ', r: 'wa' }, { k: 'を', r: 'wo' }] },
+    { id: 'row-n', label: 'N (ん)', chars: [{ k: 'ん', r: 'n' }] },
   ],
   dakuten: [
     { id: 'row-ga', label: 'Ga (が)', chars: [{ k: 'が', r: 'ga' }, { k: 'ぎ', r: 'gi' }, { k: 'ぐ', r: 'gu' }, { k: 'げ', r: 'ge' }, { k: 'ご', r: 'go' }] },
@@ -180,6 +182,19 @@ const HIRAGANA_DATA = {
   ],
   handakuten: [
     { id: 'row-pa', label: 'Pa (ぱ)', chars: [{ k: 'ぱ', r: 'pa' }, { k: 'ぴ', r: 'pi' }, { k: 'ぷ', r: 'pu' }, { k: 'ぺ', r: 'pe' }, { k: 'ぽ', r: 'po' }] },
+  ],
+  combination: [
+    { id: 'row-kya', label: 'Kya (きゃ)', chars: [{ k: 'きゃ', r: 'kya' }, { k: 'きゅ', r: 'kyu' }, { k: 'きょ', r: 'kyo' }] },
+    { id: 'row-sha', label: 'Sha (しゃ)', chars: [{ k: 'しゃ', r: 'sha' }, { k: 'しゅ', r: 'shu' }, { k: 'しょ', r: 'sho' }] },
+    { id: 'row-cha', label: 'Cha (ちゃ)', chars: [{ k: 'ちゃ', r: 'cha' }, { k: 'ちゅ', r: 'chu' }, { k: 'ちょ', r: 'cho' }] },
+    { id: 'row-nya', label: 'Nya (にゃ)', chars: [{ k: 'にゃ', r: 'nya' }, { k: 'にゅ', r: 'nyu' }, { k: 'にょ', r: 'nyo' }] },
+    { id: 'row-hya', label: 'Hya (ひゃ)', chars: [{ k: 'ひゃ', r: 'hya' }, { k: 'ひゅ', r: 'hyu' }, { k: 'ひょ', r: 'hyo' }] },
+    { id: 'row-mya', label: 'Mya (みゃ)', chars: [{ k: 'みゃ', r: 'mya' }, { k: 'みゅ', r: 'myu' }, { k: 'みょ', r: 'myo' }] },
+    { id: 'row-rya', label: 'Rya (りゃ)', chars: [{ k: 'りゃ', r: 'rya' }, { k: 'りゅ', r: 'ryu' }, { k: 'りょ', r: 'ryo' }] },
+    { id: 'row-gya', label: 'Gya (ぎゃ)', chars: [{ k: 'ぎゃ', r: 'gya' }, { k: 'ぎゅ', r: 'gyu' }, { k: 'ぎょ', r: 'gyo' }] },
+    { id: 'row-ja', label: 'Ja (じゃ)', chars: [{ k: 'じゃ', r: 'ja' }, { k: 'じゅ', r: 'ju' }, { k: 'じょ', r: 'jo' }] },
+    { id: 'row-bya', label: 'Bya (びゃ)', chars: [{ k: 'びゃ', r: 'bya' }, { k: 'びゅ', r: 'byu' }, { k: 'びょ', r: 'byo' }] },
+    { id: 'row-pya', label: 'Pya (ぴゃ)', chars: [{ k: 'ぴゃ', r: 'pya' }, { k: 'ぴゅ', r: 'pyu' }, { k: 'ぴょ', r: 'pyo' }] },
   ]
 };
 
@@ -210,7 +225,7 @@ export default function App() {
   // Pool Logic
   const activePool = useMemo(() => {
     let pool = [];
-    [...HIRAGANA_DATA.basic, ...HIRAGANA_DATA.dakuten, ...HIRAGANA_DATA.handakuten].forEach(row => {
+    [...HIRAGANA_DATA.basic, ...HIRAGANA_DATA.dakuten, ...HIRAGANA_DATA.handakuten, ...HIRAGANA_DATA.combination].forEach(row => {
       if (selectedRowIds.includes(row.id)) pool = [...pool, ...row.chars];
     });
     return pool;
@@ -317,13 +332,29 @@ export default function App() {
             </div>
 
             {/* Handakuten */}
-            <div style={{marginBottom: '100px'}}>
+            <div style={{marginBottom: '30px'}}>
                <div className="section-header" style={{marginBottom: '15px'}}>
                 <h2><span className="pill" style={{background: '#f59e0b'}}></span>Semi-Voiced</h2>
                 <button onClick={() => toggleCategory('handakuten')} className="btn-text" style={{color: '#f59e0b'}}>Toggle All</button>
               </div>
               <div className="grid">
                 {HIRAGANA_DATA.handakuten.map(row => (
+                  <SelectionRow 
+                    key={row.id} label={row.label} preview={row.chars.map(c => c.k).join(' ')}
+                    isSelected={selectedRowIds.includes(row.id)} onToggle={() => toggleRow(row.id)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Combinations (Yoon) */}
+            <div style={{marginBottom: '100px'}}>
+               <div className="section-header" style={{marginBottom: '15px'}}>
+                <h2><span className="pill" style={{background: '#10b981'}}></span>Combinations (Yoon)</h2>
+                <button onClick={() => toggleCategory('combination')} className="btn-text" style={{color: '#10b981'}}>Toggle All</button>
+              </div>
+              <div className="grid">
+                {HIRAGANA_DATA.combination.map(row => (
                   <SelectionRow 
                     key={row.id} label={row.label} preview={row.chars.map(c => c.k).join(' ')}
                     isSelected={selectedRowIds.includes(row.id)} onToggle={() => toggleRow(row.id)}
