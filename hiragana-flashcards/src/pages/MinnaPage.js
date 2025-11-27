@@ -162,7 +162,7 @@ const MinnaPage = ({ onBack }) => {
             <Icons.ArrowLeft /> Lessons
           </button>
           <span className="nav-btn" style={{cursor: 'default', fontWeight: 'bold', color: '#0ea5e9'}}>
-            Lesson {lesson} • {lessonPool.length} Cards
+            Lesson {lesson} • {deck.length + (vocabCard ? 1 : 0)} Left
           </span>
         </div>
 
